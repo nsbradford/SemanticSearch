@@ -1,0 +1,18 @@
+# misc
+python-dotenv==0.21.0
+
+# Backend
+fastapi==0.88.0
+uvicorn==0.20.0
+
+# Vector DB
+pinecone-client==2.0.13
+
+# Mongo
+pymongo==4.3.3
+
+# ML
+sentence-transformers==2.2.2
+
+# S3
+boto3==1.26.27
