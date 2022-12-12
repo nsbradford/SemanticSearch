@@ -3,6 +3,24 @@ from pydantic import BaseModel
 from typing import List
 from utils import remove_duplicates, hash_sha256
 
+
+class PassageEmbedding(BaseModel):
+    id: str
+    embedding: List[float]
+    metadata: dict
+    text: str
+    document_id: str
+
+    def to_pinecone(self):
+        return (self.id, self.embedding, self.metadata)
+    
+    def to_mongo(self):
+        d = self.dict()
+        d['_id'] = self.id
+        del d['id']
+        return d
+
+
 class Document(BaseModel):
     name: str
     contents: str
@@ -28,7 +46,8 @@ class Document(BaseModel):
         d['lines'] = [
             {hash_sha256(line): i} for i, line in enumerate(self.lines)
         ]
-        d['is_active'] = False
+        # d['is_active'] = False
+        d['processed'] = 'IN_PROGRESS' # or 'COMPLETE'
         return d
     
     def mongo_dict_lines(self) -> List[dict]:

@@ -71,8 +71,6 @@ def batch_upsert(
     https://docs.pinecone.io/docs/insert-data
     """
     print(f'Upserting {len(embeddings)} vectors sequentially...')
-    # for ids_vectors_chunk in tqdm(chunks(embeddings, batch_size=100)):
-    #     index.upsert(vectors=ids_vectors_chunk)
     with tqdm(total=len(embeddings)) as pbar:
         for ids_vectors_chunk in chunks(embeddings, batch_size=100):
             index.upsert(vectors=ids_vectors_chunk)
@@ -109,11 +107,18 @@ if __name__ == '__main__':
     # index = init_pinecone_and_get_index()
     # index.delete(ids=["id-1", "id-2"], namespace='example-namespace')
     # index.delete(delete_all=True) # , namespace=''
-    init_pinecone()
-    pinecone.delete_index("semantic-768")
-    pinecone.create_index("semantic-384", dimension=384, metric="cosine", pod_type="p1")
-    print('Indexes:', pinecone.list_indexes())
+    
+    # create new index
+    # init_pinecone()
+    # pinecone.delete_index("semantic-768")
+    # pinecone.create_index("semantic-384", dimension=384, metric="cosine", pod_type="p1")
+    # print('Indexes:', pinecone.list_indexes())
+
+    # do some deletions
     index = init_pinecone_and_get_index()
+    print(index.describe_index_stats())
+    print(f'deleting index {index}...')
+    index.delete(delete_all=True)
 
     # index_quickstart = pinecone.Index("quickstart")
     # print(index_quickstart.describe_index_stats())
