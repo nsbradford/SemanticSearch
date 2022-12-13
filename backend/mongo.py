@@ -17,6 +17,12 @@ def connect_to_mongo():
 
 
 @timing
+def clear_mongo_collections(db):
+    db.docs.drop()
+    db.passages.drop()
+
+
+@timing
 def upload_metadata_to_mongo(docs: List[Document], passages: List[PassageEmbedding], db):
     print(f"Uploading {len(docs)} documents to MongoDB...")
     db.docs.insert_many([d.mongo_dict() for d in docs])
@@ -66,6 +72,7 @@ def upload_metadata_to_mongo(docs: List[Document], passages: List[PassageEmbeddi
 
 @timing
 def lookup_passage_contents(db, passage_ids: List[str]) -> List[dict]:
-    passages = list(db.passages.find({'_id': {'$in': passage_ids}}))
-    print(f"Found {len(passages)}/{len(passage_ids)} matching IDs in MongoDB")
+    passages_raw = list(db.passages.find({'_id': {'$in': passage_ids}}))
+    print(f"Found {len(passages_raw)}/{len(passage_ids)} matching IDs in MongoDB")
+    passages = [PassageEmbedding.from_mongo(p) for p in passages_raw]
     return passages

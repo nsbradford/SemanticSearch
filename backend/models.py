@@ -11,6 +11,11 @@ class PassageEmbedding(BaseModel):
     text: str
     document_id: str
 
+
+    @property
+    def sequence_num(self) -> int:
+        return int(self.id.split('|')[1])
+
     def to_pinecone(self):
         return (self.id, self.embedding, self.metadata)
     
@@ -19,6 +24,34 @@ class PassageEmbedding(BaseModel):
         d['_id'] = self.id
         del d['id']
         return d
+    
+    @staticmethod
+    def from_mongo(dict):
+        d = dict.copy()
+        d['id'] = d['_id']
+        del d['_id']
+        return PassageEmbedding(**d)
+
+
+class QueryPassageAnswer(BaseModel):
+    # passage: PassageEmbedding
+    # before: PassageEmbedding
+    # after: PassageEmbedding
+    before_text: str
+    passage_text: str
+    after_text: str
+    document_name: str
+
+    def debug_full_text(self) -> None:
+        print(f"\nBEFORE:{self.before_text}")
+        print(f'TARGET:{self.passage_text}')
+        print(f'AFTER:{self.after_text}')
+        print(f'\nCombined: {self.before_text}{self.passage_text}{self.after_text}')
+
+
+class QueryFullAnswer(BaseModel):
+    # query: str
+    results: List[QueryPassageAnswer]
 
 
 class Document(BaseModel):

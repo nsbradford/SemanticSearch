@@ -7,13 +7,15 @@ from models import Document, PassageEmbedding
 from transformers import AutoTokenizer, AutoModel
 import torch
 
-
+@timing
 def load_tokenizer_hebbia():
     return AutoTokenizer.from_pretrained('sentence-transformers/msmarco-MiniLM-L-6-v3')
 
+@timing
 def load_automodel_hebbia():
     return AutoModel.from_pretrained('sentence-transformers/msmarco-MiniLM-L-6-v3')
 
+@timing
 def load_model_hebbia():
     """384-dimensional embeddings"""
     return SentenceTransformer('sentence-transformers/msmarco-MiniLM-L-6-v3')
@@ -51,7 +53,7 @@ def load_model_hebbia():
 #     print(decoded)
 #     return decoded
 
-@timing
+# @timing
 def tokenize_with_stride(s: str, tokenizer: AutoTokenizer) -> dict:
     """
     means max overlap of Stride between segments
@@ -62,7 +64,7 @@ def tokenize_with_stride(s: str, tokenizer: AutoTokenizer) -> dict:
     # if you don't return tensors, will get error later when passing to model
     result = tokenizer(s, max_length=100, padding=True, truncation=True, stride=50, return_overflowing_tokens=True,
         return_tensors='pt')
-    print(f'Got {len(result["input_ids"])} passages with lengths: {[len(x) for x in result["input_ids"]]}')
+    # print(f'Got {len(result["input_ids"])} passages with lengths: {[len(x) for x in result["input_ids"]]}')
     # for x in result["input_ids"]: print(t.decode(x))
 
     # if you don't do this forward pass will throw error on unexpected kwarg
@@ -71,14 +73,14 @@ def tokenize_with_stride(s: str, tokenizer: AutoTokenizer) -> dict:
 
 
 #Mean Pooling - Take attention mask into account for correct averaging
-@timing
+# @timing
 def mean_pooling(model_output, attention_mask):
     token_embeddings = model_output[0] #First element of model_output contains all token embeddings
     input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
     return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
 
 
-@timing
+# @timing
 def encode_document_with_stride(
     document: Document,
     model: AutoModel,
@@ -87,19 +89,20 @@ def encode_document_with_stride(
     """
     https://huggingface.co/sentence-transformers/msmarco-MiniLM-L-6-v3
     """
+    # print(f'encode_document_with_stride: {document.hash_contents}:"{document.name}" with {len(document.contents)} chars')
     encoded_input: dict = tokenize_with_stride(document.contents, tokenizer)
-    print('Encoding tokenized input...')
+    # print('Encoding tokenized input...')
     with torch.no_grad():
         model_output = model(**encoded_input)
     sentence_embeddings = mean_pooling(model_output, encoded_input['attention_mask'])
     result = sentence_embeddings.tolist()
-    print(f'Got {len(result)} result embeddings! Rolling out with metadata...')
+    # print(f'Got {len(result)} result embeddings! Rolling out with metadata...')
 
     # unzip and flatten
     with_metadata = []
     for i, (embedding, token_ids) in enumerate(zip(result, encoded_input['input_ids'])):
         decoded_str = tokenizer.decode(token_ids, skip_special_tokens=True)
-        print(f'{i}: {decoded_str}')
+        # print(f'{i}: {decoded_str}')
         passage_id = document.hash_contents + '|' + str(i)
         passage = PassageEmbedding(
             id=passage_id, 

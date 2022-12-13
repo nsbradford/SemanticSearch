@@ -41,6 +41,9 @@ Send multiple files at once:
         -F "files=@data/essays/ace.txt" \
         -F "files=@data/essays/top.txt"
 
+Load everything in ./data/essays
+
+    $ curl -X POST http://localhost:8000/reupload_all
 
 ### CLI
 

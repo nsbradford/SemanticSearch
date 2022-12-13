@@ -103,6 +103,13 @@ def get_pinecone_query(
     return matches
 
 
+@timing
+def clear_pinecone_index(index):
+    print(f'deleting index {index}...')
+    print(index.describe_index_stats())
+    index.delete(delete_all=True)
+
+
 if __name__ == '__main__':
     # index = init_pinecone_and_get_index()
     # index.delete(ids=["id-1", "id-2"], namespace='example-namespace')
@@ -116,9 +123,7 @@ if __name__ == '__main__':
 
     # do some deletions
     index = init_pinecone_and_get_index()
-    print(index.describe_index_stats())
-    print(f'deleting index {index}...')
-    index.delete(delete_all=True)
+    # clear_pinecone_index(index)
 
     # index_quickstart = pinecone.Index("quickstart")
     # print(index_quickstart.describe_index_stats())

@@ -1,11 +1,11 @@
 from fastapi import FastAPI, UploadFile
 from run import execute_query
 
-from mongo import connect_to_mongo
+from mongo import connect_to_mongo, clear_mongo_collections
 from embed import load_model_hebbia, load_tokenizer_hebbia, load_automodel_hebbia
-from vector import init_pinecone_and_get_index
+from vector import init_pinecone_and_get_index, clear_pinecone_index
 from pydantic import BaseModel
-from run import process_docs
+from run import process_docs, glob_docs
 from models import Document
 
 app = FastAPI()
@@ -24,10 +24,9 @@ class QueryParams(BaseModel):
 
 @app.post("/query")
 async def query(params: QueryParams):
-    results = execute_query(
+    return execute_query(
         params.query, params.top_k, app.mongo_db, app.embedding_model, app.pinecone_index
     )
-    return {"results": results}
 
 
 @app.post("/upload")
@@ -45,6 +44,17 @@ async def upload_many(files: list[UploadFile]):
     )
     return {'result': 'All docs successfully processed'}
 
+
+@app.post("/reupload_all")
+async def upload_all():
+    clear_pinecone_index(app.pinecone_index)
+    clear_mongo_collections(app.mongo_db)
+
+    docs = glob_docs('../data/essays')
+    process_result = process_docs(
+        docs, app.mongo_db, app.pinecone_index, app.automodel, app.tokenizer
+    )
+    return {'result': 'All docs successfully processed'}
 
 #===============================================================================
 # App startup

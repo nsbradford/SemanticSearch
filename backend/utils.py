@@ -51,3 +51,35 @@ def remove_duplicates(xs: List, key: Callable) -> List:
     """
     seen = set()
     return [x for x in xs if not (key(x) in seen or seen.add(key(x)))]
+
+
+
+
+def find_prefix(text: str, before: str) -> str:
+    """ Returns the part of the BEFORE string that's not at the beginning of TEXT. 
+        Super inefficient, but it's only for a small number of strings, whatever
+    """
+    for i in range(0, len(text)):
+        # print(f'Check {text[:i]}')
+        if before.endswith(text[:i]):
+            k = i
+        #     print('\tUpdated!')
+        # else:
+        #     print('\tNope')
+        
+    # print('k:', k)
+    return before[:-k]
+
+def find_postfix(text: str, after: str) -> str:
+    """ Returns the part of the AFTER string that's not at the end of TEXT. 
+        Super inefficient, but it's only for a small number of strings, whatever
+    """
+    i = len(text) - len(find_prefix(text=after, before=text))
+    return after[i:]
+
+
+# if __name__ == '__main__':
+#     answer = find_prefix(before='howdy i am hello', text='hello world')
+#     print(f'answer: "{answer}"')
+#     answer = find_postfix(text='howdy i am hello', after='hello world')
+#     print(f'answer: "{answer}"')
