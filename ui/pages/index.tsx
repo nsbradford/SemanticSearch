@@ -77,11 +77,7 @@ const PromptPage: NextPage = () => {
 
             <MessageHistory messages={answers} waiting={waiting} />
           </>
-          
         )}
-        
-       
-
       </main>
     </>
   );

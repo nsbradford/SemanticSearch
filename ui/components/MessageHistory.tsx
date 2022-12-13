@@ -15,14 +15,15 @@ export function MessageHistory({
 }) {
   const renderedMessages = messages.map((message: QueryPassageAnswer, i: number) => {
     // sad, highlight not working
-    const url = `/doc/${message.document_id}#:~:text=${message.passage_text}`
+    const url = `/doc/${message.document_id}#:~:text=${message.passage_text}`;
     // whitespace-pre-line
     return (
       <li key={i} className="mx-4 my-3">
-        <a className="font-thin text-violet-400" target="_blank" href={url} rel="noreferrer">{message.document_name}
-        &nbsp;
-        <FontAwesomeIcon icon={faLink} className="fa-fw" />
-        </a> 
+        <a className="font-thin text-violet-400" target="_blank" href={url} rel="noreferrer">
+          {message.document_name}
+          &nbsp;
+          <FontAwesomeIcon icon={faLink} className="fa-fw" />
+        </a>
         <div className="outline outline-2 outline-slate-200 rounded-lg p-3 mt-1">
           <span className="font-thin text-gray-300">{message.before_text}</span>
           <span className="font-bold">{message.passage_text}</span>

@@ -54,7 +54,6 @@ export function InputForm({
         className="bg-violet-400 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded focus:outline-slate-400 disabled:bg-slate-200 shadow">
         <FontAwesomeIcon icon={faMagnifyingGlass} className="text-base" />
       </button>
-
     </form>
   );
 }
