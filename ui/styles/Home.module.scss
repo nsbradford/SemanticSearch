@@ -1,0 +1,50 @@
+/* define primary colors */
+// $money-green: #85bb65;
+// $blood-red: #dc143c;
+// $light-grey: #D3D3D3;
+
+// :export {
+//   moneyGreen: $money-green;
+//   bloodRed: $blood-red;
+//   lightGrey: $light-grey;
+// }
+
+.main {
+  
+}
+
+.mainlink {
+  @apply hover:underline text-violet-300;
+}
+
+.utilbutton {
+  @apply mx-1 my-2 bg-slate-300 hover:bg-gray-600 text-white font-bold py-2 px-3 rounded;
+}
+
+.littletext {
+  @apply flex items-center justify-center text-sm text-gray-400/*  my-1 */;
+  // white-space: pre-wrap;
+}
+
+.bubble {
+  @apply /* m-1.5 p-1.5  */ /* pl-3 pr-3 */ mx-2 /* rounded-xl */ max-w-[80%];
+  // background-color: #e5e5ea;
+  word-wrap: break-word;
+}
+
+.bubbleleft {
+  @extend .bubble;
+  // @apply bg-slate-500;
+  // background-color: #e5e5ea;
+  // color: #000;
+  @apply float-left;
+}
+
+.bubbleright {
+  @extend .bubble;
+  @apply float-right; // bg-violet-400
+}
+
+// TODO To make more like iMessage, checkout:
+// https://codepen.io/AllThingsSmitty/pen/jommGQ
+// https://stackoverflow.com/questions/19400183/how-to-style-chat-bubble-in-iphone-classic-style-using-css-only

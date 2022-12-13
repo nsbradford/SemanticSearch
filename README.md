@@ -1,6 +1,12 @@
 # SemanticSearch
 
+This is built with FastAPI, NextJS, MongoDB, and Pinecone.
 
+Next:
+- oneclick "explore more", combine found vector
+- hyperlink to raw document
+- threshold warning color result likely quality
+- NER
 
 ## Install
 
@@ -10,13 +16,30 @@ You might want to use `pyenv` to create a virtualenv in which to install Python 
     $ pyenv activate myenvname
     (myenvname) $ pip install -r requirements.txt
 
+Assuming you have Node/npm (perhaps with [nvm](https://github.com/nvm-sh/nvm)), simply clone this repo, and then from the `./ui` folder (with `package.json` in it) install dependencies:
+
+    $ cd ./ui
+    $ npm install 
+
 
 ## Run
 
-### FastAPI
+### Web App
 
-Start the server
+Start the server (port 8000):
+
+    $ cd ./backend
     $ uvicorn main:app --reload
+
+Now you're ready to run the server locally (port 3000) from within `./ui`:
+
+    $ cd ./ui
+    $ npm run dev
+
+And just head over to `http://localhost:3000` to demo!
+
+
+### Test APIs with Curl
 
 Ask a question
 
@@ -41,21 +64,9 @@ Send multiple files at once:
         -F "files=@data/essays/ace.txt" \
         -F "files=@data/essays/top.txt"
 
-Load everything in ./data/essays
+Load everything in ./data/essays (WARNING: this will take ~10 minutes)
 
     $ curl -X POST http://localhost:8000/reupload_all
-
-### CLI
-
-Run the CLI:
-
-    $ cd ./backend 
-    $ python run.py "YOUR QUERY HERE"
-
-Run the FastAPI backend (port 8000):
-
-    $ cd ./backend 
-    $ uvicorn main:app --reload
 
 
 ## Testing

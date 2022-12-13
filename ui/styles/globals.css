@@ -1,0 +1,68 @@
+/* To get tailwind to import properly
+ https://stackoverflow.com/questions/64032166/tailwindcss-not-working-with-next-js-what-is-wrong-with-the-configuration
+*/
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+/* end tailwind */ 
+
+
+
+@font-face {
+  font-family: "ColfaxAI";
+  src: url(https://cdn.openai.com/API/fonts/ColfaxAIRegular.woff2)
+      format("woff2"),
+    url(https://cdn.openai.com/API/fonts/ColfaxAIRegular.woff) format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "ColfaxAI";
+  src: url(https://cdn.openai.com/API/fonts/ColfaxAIBold.woff2) format("woff2"),
+    url(https://cdn.openai.com/API/fonts/ColfaxAIBold.woff) format("woff");
+  font-weight: bold;
+  font-style: normal;
+}
+
+html,
+body {
+  /* max-width: 100%; */
+  /* padding: 0;
+  margin: 0; */
+  font-family: "ColfaxAI", Helvetica, sans-serif;
+  /* font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif; */
+
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* align-items: center; */
+    padding-top: 1rem;
+    
+}
+
+/* a {
+  color: inherit;
+  text-decoration: none;
+} */
+
+
+/* .a {
+  color: #0070f3;
+}
+.a:hover{
+  text-decoration: underline;
+} */
+
+/* * {
+  box-sizing: border-box;
+} */
+
+/* @media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    color: white;
+    background: black;
+  }
+} */

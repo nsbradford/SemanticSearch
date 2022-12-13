@@ -7,9 +7,21 @@ from vector import init_pinecone_and_get_index, clear_pinecone_index
 from pydantic import BaseModel
 from run import process_docs, glob_docs
 from models import Document
-
+from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 #===============================================================================
 # Models
