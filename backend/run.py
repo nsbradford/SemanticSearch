@@ -11,17 +11,18 @@ from models import Document, QueryFullAnswer, PassageEmbedding, QueryPassageAnsw
 from s3 import upload_to_s3
 from collections import defaultdict
 
-# @timing
-# def get_unprocessed_docs(docs: List[Document], db) -> List[Document]:
-#     # we maybe don't need to do this, can simply insert 
-#     # and that will fail for existing ids
-#     to_insert = []
-#     for doc in docs:
-#         # skip if already exists
-#         if db.docs.find_one({"_id": doc.hash_contents, 'processed': True}):
-#             print(f"Skipping {doc} because it already exists and is processed")
-#         else:
-#             to_insert.append(doc)
+@timing
+def get_unprocessed_docs(docs: List[Document], db) -> List[Document]:
+    # we maybe don't need to do this, can simply insert 
+    # and that will fail for existing ids
+    to_insert = []
+    for doc in docs:
+        # skip if already exists , 'processed': True
+        if db.docs.find_one({"_id": doc.hash_contents}):
+            print(f"Skipping {doc} because it already exists and is processed")
+        else:
+            to_insert.append(doc)
+    return to_insert
 
 # @timing
 # def mark_document_finished_processing(docs: List[Document], db):
@@ -67,13 +68,14 @@ def process_docs(all_docs: List[Document], db, index, model, tokenizer) -> None:
     
     Eventually will return Task IDs
     """
-    docs = all_docs #get_unprocessed_docs(all_docs, db)
-    passages = encode_all_docs(docs, model, tokenizer)
-    upload_metadata_to_mongo(docs, passages, db)
-    # upload_to_s3(docs)
-    all_embeddings = [passage.to_pinecone() for passage in passages]
-    batch_upsert(all_embeddings, index)
-    # mark_document_finished_processing(docs, db)
+    docs = get_unprocessed_docs(all_docs, db)
+    if docs:
+        passages = encode_all_docs(docs, model, tokenizer)
+        upload_metadata_to_mongo(docs, passages, db)
+        # upload_to_s3(docs)
+        all_embeddings = [passage.to_pinecone() for passage in passages]
+        batch_upsert(all_embeddings, index)
+        # mark_document_finished_processing(docs, db)
     return None
 
 
@@ -89,13 +91,14 @@ def present_passage(passage: PassageEmbedding, db) -> QueryPassageAnswer:
     after = db.passages.find_one({"_id": after_id})
     document_name = db.docs.find_one({"_id": doc_id})["name"]
     # merge the passages so there's not duplicate in the before and answer
-    before_text = find_prefix(before=before['text'], text=passage.text)
-    after_text = find_postfix(text=passage.text, after=after['text'])
+    before_text = find_prefix(before=before['text'], text=passage.text) if before else ''
+    after_text = find_postfix(text=passage.text, after=after['text']) if after else ''
     answer = QueryPassageAnswer(
         before_text=before_text,
         passage_text=passage.text,
         after_text=after_text,
         document_name=document_name,
+        document_id=doc_id,
     )
     answer.debug_full_text()
     return answer

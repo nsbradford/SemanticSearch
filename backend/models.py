@@ -41,6 +41,7 @@ class QueryPassageAnswer(BaseModel):
     passage_text: str
     after_text: str
     document_name: str
+    document_id: str
 
     def debug_full_text(self) -> None:
         print(f"\nBEFORE:{self.before_text}")

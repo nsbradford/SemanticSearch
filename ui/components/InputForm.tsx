@@ -1,7 +1,6 @@
-import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useFormik } from 'formik';
-import React from 'react';
 
 // interface ErrorType {
 //   humanInput?: string;
@@ -53,10 +52,9 @@ export function InputForm({
         type="submit"
         disabled={!formik.isValid || !formik.dirty || waiting}
         className="bg-violet-400 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded focus:outline-slate-400 disabled:bg-slate-200 shadow">
-        <FontAwesomeIcon icon={faArrowUp} className="text-base" />
+        <FontAwesomeIcon icon={faMagnifyingGlass} className="text-base" />
       </button>
 
-      {/* <div className="block">{formik.errors.humanInput}</div> */}
     </form>
   );
 }

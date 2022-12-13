@@ -3,8 +3,8 @@
 This is built with FastAPI, NextJS, MongoDB, and Pinecone.
 
 Next:
-- oneclick "explore more", combine found vector
 - hyperlink to raw document
+- oneclick "explore more", combine found vector
 - threshold warning color result likely quality
 - NER
 

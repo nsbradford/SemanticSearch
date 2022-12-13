@@ -42,7 +42,7 @@ async def query(params: QueryParams):
 
 
 @app.post("/upload")
-async def upload_many(files: list[UploadFile]):
+async def upload(files: list[UploadFile]):
     print(f'received filesnames: {[file.filename for file in files]}')
     docs = []
     for file in files:
@@ -58,15 +58,23 @@ async def upload_many(files: list[UploadFile]):
 
 
 @app.post("/reupload_all")
-async def upload_all():
-    clear_pinecone_index(app.pinecone_index)
-    clear_mongo_collections(app.mongo_db)
+async def reupload_all():
+    # clear_pinecone_index(app.pinecone_index)
+    # clear_mongo_collections(app.mongo_db)
 
     docs = glob_docs('../data/essays')
     process_result = process_docs(
         docs, app.mongo_db, app.pinecone_index, app.automodel, app.tokenizer
     )
     return {'result': 'All docs successfully processed'}
+
+@app.get("/document/{doc_id}")
+async def document(doc_id):
+    db = app.mongo_db
+    print(f'Searching for doc_id: {doc_id}')
+    doc = db.docs.find_one({'_id': doc_id})
+    print(f'found doc: {doc}')
+    return doc
 
 #===============================================================================
 # App startup

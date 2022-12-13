@@ -1,26 +1,23 @@
 import typingIndicatorStyles from '../styles/TypingIndicator.module.scss';
 
-// export const backendRootUrl = process.env.NEXT_PUBLIC_ROUTE_ROOT_URL;
 export const isDevEnvironment = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
 export const backendRootUrl = 'http://localhost:8000';
-
-// export interface Message {
-//   index: number;
-//   message_type: MessageType;
-//   contents: string;
-//   workflow_type?: WorkflowType;
-//   debug?: any[];
-// }
 
 export interface QueryPassageAnswer {
   before_text: string;
   passage_text: string;
   after_text: string;
   document_name: string;
+  document_id: string;
 }
 
 export interface QueryFullAnswer {
   results: QueryPassageAnswer[];
+}
+
+export interface SemanticDoc {
+  name: string;
+  contents: string;
 }
 
 // https://loading.io/css/

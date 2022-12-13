@@ -1,4 +1,4 @@
-import { faMagnifyingGlass, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { faRotateRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 import type { NextPage } from 'next';
@@ -6,7 +6,7 @@ import React from 'react';
 import { HeadDefault } from '../components/HeadDefault';
 import { InputForm } from '../components/InputForm';
 import { MessageHistory } from '../components/MessageHistory';
-import { backendRootUrl, QueryFullAnswer, QueryPassageAnswer, TextArea } from '../components/Utils';
+import { backendRootUrl, QueryFullAnswer, QueryPassageAnswer } from '../components/Utils';
 
 async function postQuery(
   userinput: string,
@@ -64,18 +64,23 @@ const PromptPage: NextPage = () => {
 
         <InputForm handleSubmit={handleNewUserPrompt} waiting={waiting} />
 
-        {answers.length > 0 && (
-          <div className="flex place-content-center w-full">
-          <button
-            onClick={resetMessages}
-            className="bg-slate-400 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded focus:outline-slate-400 disabled:bg-slate-200 shadow mx-1">
-            <FontAwesomeIcon icon={faRotateRight} className="fa-fw" />
-            Reset
-          </button>
-          </div>
+        {(answers.length > 0 || waiting) && (
+          <>
+            <div className="flex place-content-center w-full">
+              <button
+                onClick={resetMessages}
+                className="bg-slate-400 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded focus:outline-slate-400 disabled:bg-slate-200 shadow mx-1">
+                <FontAwesomeIcon icon={faRotateRight} className="fa-fw" />
+                Reset
+              </button>
+            </div>
+
+            <MessageHistory messages={answers} waiting={waiting} />
+          </>
+          
         )}
         
-        <MessageHistory messages={answers} waiting={waiting} />
+       
 
       </main>
     </>
