@@ -1,17 +1,31 @@
+import { Metadata } from 'next';
 import Head from 'next/head';
+export const metadata: Metadata = {
+  title: `Semantic Search`,
+  icons: {
+    icon: '/favicon-16x16.png',
+    apple: '/apple-touch-icon.png',
+  },
+  manifest: '/site.webmanifest',
+  themeColor: [
+    {
+      color: '#ffffff',
+    },
+  ],
+};
 
 export function HeadDefault() {
   return (
     <Head>
-      <title>Semantic Search</title>
-      <link rel="icon" href="/favicon.ico" />
-      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-      <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-      <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-      <link rel="manifest" href="/site.webmanifest" />
+      {/* title was removed */}
+      {/* link was removed */}
+      {/* link was removed */}
+      {/* link was removed */}
+      {/* link was removed */}
+      {/* link was removed */}
       <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
       <meta name="msapplication-TileColor" content="#da532c" />
-      <meta name="theme-color" content="#ffffff" />
+      {/* meta was removed */}
     </Head>
   );
 }
