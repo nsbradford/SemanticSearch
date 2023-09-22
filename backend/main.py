@@ -1,14 +1,22 @@
 from fastapi import FastAPI, UploadFile
 from backend.llm import llm_get
-from run import execute_query
+from backend.run import execute_query
 
-from mongo import connect_to_mongo, clear_mongo_collections
-from embed import load_model_hebbia, load_tokenizer_hebbia, load_automodel_hebbia
-from vector import init_pinecone_and_get_index, clear_pinecone_index
+from backend.mongo import connect_to_mongo, clear_mongo_collections
+from backend.embed import (
+    load_model_hebbia,
+    load_tokenizer_hebbia,
+    load_automodel_hebbia,
+)
+from backend.vector import init_pinecone_and_get_index, clear_pinecone_index
 from pydantic import BaseModel
-from run import process_docs, glob_docs
-from models import Document, LLMGetRequest
+from backend.run import process_docs, glob_docs
+from backend.models import Document, LLMGetRequest
 from fastapi.middleware.cors import CORSMiddleware
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI()
 

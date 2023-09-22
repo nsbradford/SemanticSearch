@@ -1,6 +1,5 @@
 # misc
 python-dotenv==0.21.0
-black
 
 # Backend
 fastapi==0.88.0
@@ -19,3 +18,7 @@ sentence-transformers==2.2.2
 # S3
 boto3==1.26.27
 
+# dev
+black
+pytest
+httpx

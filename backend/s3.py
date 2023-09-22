@@ -1,6 +1,6 @@
 import boto3
 from typing import List
-from models import Document
+from backend.models import Document
 import botocore
 
 # Let's use Amazon S3

@@ -1,8 +1,9 @@
+import os
 from pymongo import MongoClient
 import pymongo
 from dotenv import dotenv_values
-from utils import timing, remove_duplicates
-from models import Document, PassageEmbedding
+from backend.utils import timing, remove_duplicates
+from backend.models import Document, PassageEmbedding
 from typing import List
 
 # https://www.mongodb.com/languages/python/pymongo-tutorial
@@ -10,9 +11,9 @@ from typing import List
 
 @timing
 def connect_to_mongo():
-    config = dotenv_values(".env")
-    mongodb_client = MongoClient(config["MONGO_URI"])
-    database = mongodb_client[config["MONGO_DB_NAME"]]
+    # config = dotenv_values(".env")
+    mongodb_client = MongoClient(os.environ["MONGO_URI"])
+    database = mongodb_client[os.environ["MONGO_DB_NAME"]]
     print("Connected to the MongoDB database!")
     return mongodb_client, database
 

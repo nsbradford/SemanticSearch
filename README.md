@@ -24,7 +24,7 @@ Assuming you have Node/npm (perhaps with [nvm](https://github.com/nvm-sh/nvm)), 
 Start the server (port 8000):
 
     $ cd ./backend
-    $ uvicorn main:app --reload
+    $ uvicorn backend.main:app --reload
 
 Now you're ready to run the server locally (port 3000) from within `./ui`:
 

@@ -1,7 +1,7 @@
 from functools import cache, cached_property
 from pydantic import BaseModel
 from typing import List
-from utils import remove_duplicates, hash_sha256
+from backend.utils import remove_duplicates, hash_sha256
 
 
 class Message(BaseModel):

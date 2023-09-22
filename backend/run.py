@@ -2,13 +2,23 @@ print("Begin imports...")
 from tqdm import tqdm
 import argparse
 from typing import Iterable, List, Tuple
-from embed import load_model_hebbia, encode_document_with_stride
-from mongo import upload_metadata_to_mongo, connect_to_mongo, lookup_passage_contents
-from vector import batch_upsert, get_pinecone_query
+from backend.embed import load_model_hebbia, encode_document_with_stride
+from backend.mongo import (
+    upload_metadata_to_mongo,
+    connect_to_mongo,
+    lookup_passage_contents,
+)
+from backend.vector import batch_upsert, get_pinecone_query
 import os
-from utils import timing, find_postfix, find_prefix
-from models import Document, QueryFullAnswer, PassageEmbedding, QueryPassageAnswer
-from s3 import upload_to_s3
+from backend.utils import timing, find_postfix, find_prefix
+from backend.models import (
+    Document,
+    QueryFullAnswer,
+    PassageEmbedding,
+    QueryPassageAnswer,
+)
+
+# from s3 import upload_to_s3
 from collections import defaultdict
 
 

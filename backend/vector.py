@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 from tqdm import tqdm
 from sentence_transformers import SentenceTransformer
-from utils import chunks, timing
+from backend.utils import chunks, timing
 
 
 @timing

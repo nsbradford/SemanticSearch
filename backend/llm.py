@@ -4,7 +4,7 @@ from typing import Dict, List
 
 import litellm
 from litellm import acompletion
-from utils import getEnvironment
+from backend.utils import getEnvironment
 
 # https://docs.litellm.ai/docs/observability/promptlayer_integration
 litellm.success_callback = ["promptlayer"]

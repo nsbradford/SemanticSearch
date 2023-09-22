@@ -1,9 +1,9 @@
 from typing import Iterable, List, Tuple
-from utils import hash_sha256
+from backend.utils import hash_sha256
 from functools import cache, cached_property
 from sentence_transformers import SentenceTransformer
-from utils import timing
-from models import Document, PassageEmbedding
+from backend.utils import timing
+from backend.models import Document, PassageEmbedding
 from transformers import AutoTokenizer, AutoModel
 import torch
 
