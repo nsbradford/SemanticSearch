@@ -1,34 +1,21 @@
 import { faRotateRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import axios from 'axios';
 import type { NextPage } from 'next';
 import React from 'react';
 import { HeadDefault } from '../components/HeadDefault';
 import { InputForm } from '../components/InputForm';
 import { MessageHistory } from '../components/MessageHistory';
-import { backendRootUrl, QueryFullAnswer, QueryPassageAnswer } from '../components/Utils';
-
-async function postQuery(
-  userinput: string,
-  catchFn: (error: any) => void
-): Promise<QueryFullAnswer | undefined> {
-  console.log('postQuery');
-  try {
-    const payload = { query: userinput };
-    const url = backendRootUrl + '/query';
-    console.log(`posting payload to "${url}`, payload);
-    const response = await axios.post(url, payload);
-    const data: QueryFullAnswer = response.data;
-    console.log(`Response:`, data);
-    return data;
-  } catch (error) {
-    catchFn(error);
-  }
-}
+import { QueryPassageAnswer } from '../components/Utils';
+import { postQuery, sendLLMRequest } from '../shared/api';
+import { getSessionId } from '../shared/utils';
+import { buildSummarizationPrompt } from '../shared/prompts';
 
 const PromptPage: NextPage = () => {
+  const sessionId = getSessionId();
   const [answers, setAnswers] = React.useState<QueryPassageAnswer[]>([]);
   const [waiting, setWaiting] = React.useState(false);
+  const [answerSummary, setAnswerSummary] = React.useState<string | null>(null); // New state for second request result
+
   // const [userInput, setUserInput] = React.useState('');
 
   const handleNewUserPrompt = async (content: string) => {
@@ -37,6 +24,12 @@ const PromptPage: NextPage = () => {
     console.log('Received response...', serverResponseMsg);
     if (serverResponseMsg) {
       setAnswers(serverResponseMsg.results);
+      const llmSummary = await sendLLMRequest({ model: 'gpt-3.5-turbo', messages: buildSummarizationPrompt(serverResponseMsg.results) })
+      console.log('Received LLM response...', llmSummary);
+      if (llmSummary) {
+        setAnswerSummary(llmSummary);
+      }
+
     }
     setWaiting(false);
   };
@@ -49,6 +42,8 @@ const PromptPage: NextPage = () => {
 
   const resetMessages = () => {
     setAnswers([]);
+    setAnswerSummary(null);
+    setWaiting(false);
   };
 
   return (
@@ -63,6 +58,12 @@ const PromptPage: NextPage = () => {
         </div>
 
         <InputForm handleSubmit={handleNewUserPrompt} waiting={waiting} />
+
+        {answerSummary &&
+          <div className="new-results-container bg-gray-100 p-4 my-4 rounded-lg shadow-lg">
+            {answerSummary}
+          </div>}
+
 
         {(answers.length > 0 || waiting) && (
           <>
