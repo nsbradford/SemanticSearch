@@ -1,4 +1,4 @@
-name: Main
+name: ci
 
 on:
   push:
@@ -13,7 +13,7 @@ on:
 
 jobs:
   unit_tests:
-    name: Run unit tests
+    name: run all tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
