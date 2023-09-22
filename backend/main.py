@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile
+from backend.llm import llm_get
 from run import execute_query
 
 from mongo import connect_to_mongo, clear_mongo_collections
@@ -6,7 +7,7 @@ from embed import load_model_hebbia, load_tokenizer_hebbia, load_automodel_hebbi
 from vector import init_pinecone_and_get_index, clear_pinecone_index
 from pydantic import BaseModel
 from run import process_docs, glob_docs
-from models import Document
+from models import Document, LLMGetRequest
 from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
@@ -34,11 +35,27 @@ class QueryParams(BaseModel):
 #===============================================================================
 # Endpoints
 
+
 @app.post("/query")
 async def query(params: QueryParams):
     return execute_query(
         params.query, params.top_k, app.mongo_db, app.embedding_model, app.pinecone_index
     )
+
+
+@app.post("/llm/", response_model=str)
+async def llm(request: LLMGetRequest):
+    result = llm_get(request.model, request.messages)
+    return result
+
+
+@app.get("/document/{doc_id}")
+async def document(doc_id):
+    db = app.mongo_db
+    print(f'Searching for doc_id: {doc_id}')
+    doc = db.docs.find_one({'_id': doc_id})
+    print(f'found doc: {doc}')
+    return doc
 
 
 @app.post("/upload")
@@ -50,7 +67,7 @@ async def upload(files: list[UploadFile]):
         doc = Document(name=file.filename, contents=contents)
         docs.append(doc)
 
-    # TODO async and then return task ID
+    # later make async and then return task ID
     process_result = process_docs(
         docs, app.mongo_db, app.pinecone_index, app.automodel, app.tokenizer
     )
@@ -68,13 +85,6 @@ async def reupload_all():
     )
     return {'result': 'All docs successfully processed'}
 
-@app.get("/document/{doc_id}")
-async def document(doc_id):
-    db = app.mongo_db
-    print(f'Searching for doc_id: {doc_id}')
-    doc = db.docs.find_one({'_id': doc_id})
-    print(f'found doc: {doc}')
-    return doc
 
 #===============================================================================
 # App startup

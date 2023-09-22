@@ -1,8 +1,12 @@
+import os
 import time
 from functools import wraps
 import hashlib
 import itertools
 from typing import List, Callable
+
+def getEnvironment() -> str:
+    return os.getenv('ENVIRONMENT', 'dev')
 
 # https://stackoverflow.com/questions/1622943/timeit-versus-timing-decorator
 def timing(f):

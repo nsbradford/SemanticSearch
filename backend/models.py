@@ -4,6 +4,15 @@ from typing import List
 from utils import remove_duplicates, hash_sha256
 
 
+class Message(BaseModel):
+    key: str
+    value: str
+
+class LLMGetRequest(BaseModel):
+    model: str
+    messages: List[Message]
+
+
 class PassageEmbedding(BaseModel):
     id: str
     embedding: List[float]
