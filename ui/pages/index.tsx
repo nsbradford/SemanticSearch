@@ -57,7 +57,7 @@ const PromptPage: NextPage = () => {
 
       <main>
         <div className="text-center">
-          <h1 className="text-4xl m-5">
+          <h1 className="text-4xl m-5 mt-12">
             Semantic <span className="text-violet-400">Search</span>
           </h1>
         </div>

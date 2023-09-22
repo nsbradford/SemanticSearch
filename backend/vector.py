@@ -110,19 +110,22 @@ def clear_pinecone_index(index):
     index.delete(delete_all=True)
 
 
+def create_index():
+    init_pinecone()
+    pinecone.create_index("semantic-384", dimension=384, metric="cosine", pod_type="p1")
+
 if __name__ == '__main__':
     # index = init_pinecone_and_get_index()
     # index.delete(ids=["id-1", "id-2"], namespace='example-namespace')
     # index.delete(delete_all=True) # , namespace=''
     
     # create new index
-    # init_pinecone()
-    # pinecone.delete_index("semantic-768")
-    # pinecone.create_index("semantic-384", dimension=384, metric="cosine", pod_type="p1")
-    # print('Indexes:', pinecone.list_indexes())
+    create_index()
+    print('Indexes:', pinecone.list_indexes())
 
     # do some deletions
-    index = init_pinecone_and_get_index()
+    # pinecone.delete_index("semantic-768")
+    # index = init_pinecone_and_get_index()
     # clear_pinecone_index(index)
 
     # index_quickstart = pinecone.Index("quickstart")
