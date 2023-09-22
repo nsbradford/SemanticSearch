@@ -1,9 +1,11 @@
 # misc
 python-dotenv==0.21.0
+black
 
 # Backend
 fastapi==0.88.0
 uvicorn==0.20.0
+litellm==0.1.729
 
 # Vector DB
 pinecone-client==2.0.13
@@ -16,3 +18,4 @@ sentence-transformers==2.2.2
 
 # S3
 boto3==1.26.27
+

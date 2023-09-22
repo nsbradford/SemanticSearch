@@ -1,4 +1,4 @@
-print('Begin imports...')
+print("Begin imports...")
 from tqdm import tqdm
 import argparse
 from typing import Iterable, List, Tuple
@@ -11,9 +11,10 @@ from models import Document, QueryFullAnswer, PassageEmbedding, QueryPassageAnsw
 from s3 import upload_to_s3
 from collections import defaultdict
 
+
 @timing
 def get_unprocessed_docs(docs: List[Document], db) -> List[Document]:
-    # we maybe don't need to do this, can simply insert 
+    # we maybe don't need to do this, can simply insert
     # and that will fail for existing ids
     to_insert = []
     for doc in docs:
@@ -23,6 +24,7 @@ def get_unprocessed_docs(docs: List[Document], db) -> List[Document]:
         else:
             to_insert.append(doc)
     return to_insert
+
 
 # @timing
 # def mark_document_finished_processing(docs: List[Document], db):
@@ -37,17 +39,17 @@ def glob_docs(dir) -> List[Document]:
     print(f'Loading directory "{dir}"...')
     documents = []
     for file in os.listdir(dir):
-        if file.endswith('.txt'):
+        if file.endswith(".txt"):
             full_path = os.path.join(dir, file)
             # print(full_path)
-            with open(full_path, 'r') as f:
+            with open(full_path, "r") as f:
                 file_contents = f.read()
                 # file_contents_hash = hash(file_contents)
                 # print(f'file_contents_hash={file_contents_hash}')
                 doc = Document(name=file, contents=file_contents)
                 print(doc)
                 documents.append(doc)
-    
+
     return documents
 
 
@@ -65,7 +67,7 @@ def encode_all_docs(docs, model, tokenizer):
 def process_docs(all_docs: List[Document], db, index, model, tokenizer) -> None:
     """
     TODO want to only both uploading docs which have not been uploaded yet
-    
+
     Eventually will return Task IDs
     """
     docs = get_unprocessed_docs(all_docs, db)
@@ -84,15 +86,17 @@ def present_passage(passage: PassageEmbedding, db) -> QueryPassageAnswer:
     # fetch all passages immediately before and after
     doc_id = passage.document_id
     seq = passage.sequence_num
-    before_id = doc_id + '|' + str(seq - 1)
-    after_id = doc_id + '|' + str(seq + 1)
-    print(f'Looking up: before_id={before_id} after_id={after_id} doc_id={doc_id}')
+    before_id = doc_id + "|" + str(seq - 1)
+    after_id = doc_id + "|" + str(seq + 1)
+    print(f"Looking up: before_id={before_id} after_id={after_id} doc_id={doc_id}")
     before = db.passages.find_one({"_id": before_id})
     after = db.passages.find_one({"_id": after_id})
     document_name = db.docs.find_one({"_id": doc_id})["name"]
     # merge the passages so there's not duplicate in the before and answer
-    before_text = find_prefix(before=before['text'], text=passage.text) if before else ''
-    after_text = find_postfix(text=passage.text, after=after['text']) if after else ''
+    before_text = (
+        find_prefix(before=before["text"], text=passage.text) if before else ""
+    )
+    after_text = find_postfix(text=passage.text, after=after["text"]) if after else ""
     answer = QueryPassageAnswer(
         before_text=before_text,
         passage_text=passage.text,
@@ -107,18 +111,20 @@ def present_passage(passage: PassageEmbedding, db) -> QueryPassageAnswer:
 @timing
 def merge_top_passages(passages: List[PassageEmbedding]) -> List[PassageEmbedding]:
     # eliminate if any results overlap; i.e.
-    seen = defaultdict(set) # doc id => set of seen
+    seen = defaultdict(set)  # doc id => set of seen
     answer = []
     for passage in passages:
         doc_id = passage.document_id
         seq = passage.sequence_num
-        adjacent = set([seq, seq-1, seq+1])
+        adjacent = set([seq, seq - 1, seq + 1])
         if len(adjacent & seen[doc_id]) == 0:
-            print(f'Adding {passage.id} because it does not overlap with a previous passage')
+            print(
+                f"Adding {passage.id} because it does not overlap with a previous passage"
+            )
             answer.append(passage)
             seen[doc_id].add(seq)
         else:
-            print(f'Skipping {passage.id} because it overlaps with a previous passage')
+            print(f"Skipping {passage.id} because it overlaps with a previous passage")
     return answer
 
 
@@ -129,7 +135,9 @@ def execute_query(query: str, top_k: int, db, model, index) -> QueryFullAnswer:
     passages: List[PassageEmbedding] = lookup_passage_contents(db, vector_ids)
 
     for i, (vector_result, passage) in enumerate(zip(vector_results, passages)):
-        print(f'{i}: id={vector_result["id"]} score={vector_result["score"]} | {passage.text}')
+        print(
+            f'{i}: id={vector_result["id"]} score={vector_result["score"]} | {passage.text}'
+        )
 
     filtered = merge_top_passages(passages)[:3]
     results = [present_passage(passage, db) for passage in filtered]

@@ -10,11 +10,11 @@ from utils import chunks, timing
 @timing
 def init_pinecone() -> None:
     load_dotenv()
-    pinecone_api_key = os.getenv('PINECONE_API_KEY')
+    pinecone_api_key = os.getenv("PINECONE_API_KEY")
     pinecone.init(api_key=pinecone_api_key, environment="us-west1-gcp")
-    print('connected to pinecone')
-    print('Indexes:', pinecone.list_indexes())
-    
+    print("connected to pinecone")
+    print("Indexes:", pinecone.list_indexes())
+
 
 def init_pinecone_and_get_index() -> pinecone.Index:
     init_pinecone()
@@ -45,32 +45,31 @@ def batch_upsert_parallel(
     """
     https://docs.pinecone.io/docs/insert-data#sending-upserts-in-parallel
     """
-    print(f'Upserting {len(embeddings)} vectors in parallel...')
+    print(f"Upserting {len(embeddings)} vectors in parallel...")
 
     # Upsert data with 100 vectors per upsert request asynchronously
     # - Create pinecone.Index with pool_threads=30 (limits to 30 simultaneous requests)
     # - Pass async_req=True to index.upsert()
     # Send requests in parallel
-    print('Sending requests in parallel...')
+    print("Sending requests in parallel...")
     async_results = [
         index.upsert(vectors=ids_vectors_chunk, async_req=True)
         for ids_vectors_chunk in chunks(embeddings, batch_size=100)
     ]
-    print('Waiting for results...')
+    print("Waiting for results...")
     # Wait for and retrieve responses (this raises in case of error)
     return [async_result.get() for async_result in async_results]
 
 
 @timing
 def batch_upsert(
-    embeddings: Iterable[Tuple[str, List[float], dict]],
-    index: pinecone.Index
+    embeddings: Iterable[Tuple[str, List[float], dict]], index: pinecone.Index
 ):
     """
     Batch upserts in 100 or fewer.
     https://docs.pinecone.io/docs/insert-data
     """
-    print(f'Upserting {len(embeddings)} vectors sequentially...')
+    print(f"Upserting {len(embeddings)} vectors sequentially...")
     with tqdm(total=len(embeddings)) as pbar:
         for ids_vectors_chunk in chunks(embeddings, batch_size=100):
             index.upsert(vectors=ids_vectors_chunk)
@@ -96,7 +95,7 @@ def get_pinecone_query(
         #     "active": True,
         # },
     )
-    matches = query_results['matches']
+    matches = query_results["matches"]
     for match in matches:
         # del match['values']
         print(match)
@@ -105,7 +104,7 @@ def get_pinecone_query(
 
 @timing
 def clear_pinecone_index(index):
-    print(f'deleting index {index}...')
+    print(f"deleting index {index}...")
     print(index.describe_index_stats())
     index.delete(delete_all=True)
 
@@ -114,14 +113,15 @@ def create_index():
     init_pinecone()
     pinecone.create_index("semantic-384", dimension=384, metric="cosine", pod_type="p1")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     # index = init_pinecone_and_get_index()
     # index.delete(ids=["id-1", "id-2"], namespace='example-namespace')
     # index.delete(delete_all=True) # , namespace=''
-    
+
     # create new index
     create_index()
-    print('Indexes:', pinecone.list_indexes())
+    print("Indexes:", pinecone.list_indexes())
 
     # do some deletions
     # pinecone.delete_index("semantic-768")
