@@ -1,12 +1,7 @@
 # SemanticSearch
 
-This is built with FastAPI, NextJS, MongoDB, and Pinecone.
+Minimal RAG (Retrieval Augmented Generation) website with Pinecone, FastAPI, NextJS, MongoDB
 
-Next:
-- hyperlink to raw document
-- oneclick "explore more", combine found vector
-- threshold warning color result likely quality
-- NER
 
 ## Install
 
@@ -97,4 +92,13 @@ CLI (after adding your IP address and creating a user):
 
     $ brew install mongosh
     $ mongosh "mongodb+srv://cluster0.hlqhjo4.mongodb.net/myFirstDatabase" --apiVersion 1 --username nsbradford
+
+## Future Work
+This is built with FastAPI, NextJS, MongoDB, and Pinecone.
+
+Next:
+- hyperlink to raw document
+- oneclick "explore more", combine found vector
+- threshold warning color result likely quality
+- NER
 
