@@ -1,5 +1,6 @@
 # misc
 python-dotenv==0.21.0
+python-multipart==0.0.5
 
 # Backend
 fastapi==0.88.0
