@@ -33,7 +33,7 @@ module.exports = {
     // https://stackoverflow.com/questions/67411154/eslint-no-unused-vars-on-function-parameters-within-typescript-types-interfa
     // http://eslint.org/docs/rules/no-unused-vars#argsignorepattern
     'no-unused-vars': 'off',
-    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    // '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
 
     // https://stackoverflow.com/questions/55614983/jsx-not-allowed-in-files-with-extension-tsxeslintreact-jsx-filename-extensio
     'react/jsx-filename-extension': [1, { extensions: ['.tsx', '.ts'] }],

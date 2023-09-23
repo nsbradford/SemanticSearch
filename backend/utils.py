@@ -4,7 +4,17 @@ from functools import wraps
 import hashlib
 import itertools
 from typing import List, Callable
+from fastapi.middleware.cors import CORSMiddleware
 
+
+def load_middleware(app):
+    app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def getEnvironment() -> str:
     return os.getenv("ENVIRONMENT", "dev")

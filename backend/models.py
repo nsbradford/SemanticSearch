@@ -3,6 +3,11 @@ from pydantic import BaseModel
 from typing import List
 from backend.utils import remove_duplicates, hash_sha256
 
+
+class QueryParams(BaseModel):
+    query: str
+    top_k: int = 10
+
 class LLMChatCompletionMessage(BaseModel):
     role: str
     content: str

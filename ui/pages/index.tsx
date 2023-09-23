@@ -5,7 +5,7 @@ import React from 'react';
 import { HeadDefault } from '../components/HeadDefault';
 import { InputForm } from '../components/InputForm';
 import { MessageHistory } from '../components/MessageHistory';
-import { QueryPassageAnswer } from '../components/Utils';
+import { QueryPassageAnswer, TypingIndicator } from '../components/Utils';
 import { postQuery, sendLLMRequest } from '../shared/api';
 import { getSessionId } from '../shared/utils';
 import { buildSummarizationPrompt } from '../shared/prompts';
@@ -14,28 +14,21 @@ const PromptPage: NextPage = () => {
   const sessionId = getSessionId();
   const [answers, setAnswers] = React.useState<QueryPassageAnswer[]>([]);
   const [waiting, setWaiting] = React.useState(false);
-  const [answerSummary, setAnswerSummary] = React.useState<string | null>(null); // New state for second request result
-
-  // const [userInput, setUserInput] = React.useState('');
+  const [answerSummary, setAnswerSummary] = React.useState<string | null>(null);
 
   const handleNewUserPrompt = async (content: string) => {
     setWaiting(true);
-    const llmSummary = await sendLLMRequest({ model: 'gpt-3.5-turbo', messages: [{role: 'system' as const, content: `What is the capital of France? Answer in 1 word.`}] })
-    console.log('Received LLM response...', llmSummary);
-    if (llmSummary) {
-      setAnswerSummary(llmSummary);
-    }
-    // const serverResponseMsg = await postQuery(content, axiosCatchAll);
-    // console.log('Received response...', serverResponseMsg);
-    // if (serverResponseMsg) {
-    //   setAnswers(serverResponseMsg.results);
-    //   const llmSummary = await sendLLMRequest({ model: 'gpt-3.5-turbo', messages: buildSummarizationPrompt(serverResponseMsg.results) })
-    //   console.log('Received LLM response...', llmSummary);
-    //   if (llmSummary) {
-    //     setAnswerSummary(llmSummary);
-    //   }
+    const serverResponseMsg = await postQuery(content, axiosCatchAll);
+    console.log('Received response...', serverResponseMsg);
+    if (serverResponseMsg) {
+      setAnswers(serverResponseMsg.results);
+      const llmSummary = await sendLLMRequest({ model: 'gpt-3.5-turbo', messages: buildSummarizationPrompt(content, serverResponseMsg.results) })
+      console.log('Received LLM response...', llmSummary);
+      if (llmSummary) {
+        setAnswerSummary(llmSummary);
+      }
 
-    // }
+    }
     setWaiting(false);
   };
 
@@ -64,15 +57,16 @@ const PromptPage: NextPage = () => {
 
         <InputForm handleSubmit={handleNewUserPrompt} waiting={waiting} />
 
+        {waiting && <TypingIndicator />}
         {answerSummary &&
-          <div className="new-results-container bg-gray-100 p-4 my-4 rounded-lg shadow-lg">
-            {answerSummary}
+          <div className="new-results-container bg-gray-100 p-4 my-4 mx-8 rounded-lg shadow-lg">
+            {"Summary: " + answerSummary}
           </div>}
 
 
-        {(answers.length > 0 || waiting) && (
+        {(answers.length > 0) && (
           <>
-            <div className="flex place-content-center w-full">
+            <div className="flex place-content-center w-full mt-6">
               <button
                 onClick={resetMessages}
                 className="bg-slate-400 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded focus:outline-slate-400 disabled:bg-slate-200 shadow mx-1">
@@ -81,7 +75,7 @@ const PromptPage: NextPage = () => {
               </button>
             </div>
 
-            <MessageHistory messages={answers} waiting={waiting} />
+            <MessageHistory messages={answers} /* waiting={waiting} */ />
           </>
         )}
       </main>
