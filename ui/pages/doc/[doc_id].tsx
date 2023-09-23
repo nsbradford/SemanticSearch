@@ -2,20 +2,26 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { backendRootUrl, SemanticDoc, TypingIndicator } from '../../components/Utils';
+import Head from 'next/head';
 
 const DocPage = () => {
   const router = useRouter();
   const { doc_id } = router.query;
   const [document, setDocument] = useState<SemanticDoc>();
+  const [title, setTitle] = useState<string>('Loading...')
 
   useEffect(() => {
     async function fetchDoc() {
+      if (!doc_id) {
+        return
+      };
       console.log('fetchDoc', doc_id);
       const url = backendRootUrl + '/document/' + doc_id;
       const response = await axios.get(url);
       const data: SemanticDoc = response.data;
       console.log('data', data);
       // console.log(`setDoc, contents of length: ${data.contents.length}`, data)
+      setTitle(data.name)
       setDocument(data);
       console.log('finished');
     }
@@ -33,7 +39,7 @@ const DocPage = () => {
     <TypingIndicator />
   );
 
-  return body;
+  return <><Head><title>{title}</title> </Head>{body}</>
 };
 
 export default DocPage;

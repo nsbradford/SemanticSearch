@@ -35,7 +35,7 @@ export function MessageHistory({
 
   return (
     <div className="flex place-content-center w-full p-2">
-      <div className="w-full lg:w-1/2 mx-auto mt-2 mb-2 py-3 outline outline-2 outline-slate-200 rounded-lg ">
+      <div className="w-full lg:w-3/4 2xl:w-2/5 mx-auto mt-2 mb-2 py-3 outline outline-2 outline-slate-200 rounded-lg ">
         <ul className="flex flex-col">{renderedMessages}</ul>
         {/* {waiting && <TypingIndicator />} */}
       </div>

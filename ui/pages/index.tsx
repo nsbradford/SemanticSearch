@@ -59,9 +59,12 @@ const PromptPage: NextPage = () => {
 
         {waiting && <TypingIndicator />}
         {answerSummary &&
-          <div className="new-results-container bg-gray-100 p-4 my-4 mx-8 rounded-lg shadow-lg">
-            {"Summary: " + answerSummary}
-          </div>}
+          <div className="flex place-content-center w-full px-8">
+            <div className="w-full lg:w-3/4 2xl:w-2/5 bg-gray-100 p-4 my-4 mx-auto rounded-lg shadow-lg">
+              {"Summary: " + answerSummary}
+            </div>
+          </div>
+        }
 
 
         {(answers.length > 0) && (
