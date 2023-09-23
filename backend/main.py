@@ -1,18 +1,20 @@
-from fastapi import FastAPI, UploadFile
+import traceback
+from fastapi import FastAPI, Request, UploadFile
 from backend.llm import llm_get
 from backend.run import execute_query
 
-from backend.mongo import connect_to_mongo, clear_mongo_collections
-from backend.embed import (
-    load_model_hebbia,
-    load_tokenizer_hebbia,
-    load_automodel_hebbia,
-)
-from backend.vector import init_pinecone_and_get_index, clear_pinecone_index
+# from backend.mongo import connect_to_mongo, clear_mongo_collections
+# from backend.embed import (
+#     load_model_hebbia,
+#     load_tokenizer_hebbia,
+#     load_automodel_hebbia,
+# )
+# from backend.vector import init_pinecone_and_get_index, clear_pinecone_index
 from pydantic import BaseModel
 from backend.run import process_docs, glob_docs
-from backend.models import Document, LLMGetRequest
+from backend.models import Document, LLMChatCompletionRequest
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from dotenv import load_dotenv
 
@@ -20,14 +22,23 @@ load_dotenv()
 
 app = FastAPI()
 
-origins = [
-    "http://localhost",
-    "http://localhost:3000",
-]
+# TODO this doesn't work
+# https://stackoverflow.com/questions/68914523/fastapi-pydantic-value-error-raises-internal-server-error
+# @app.exception_handler(ValueError)
+# async def value_error_exception_handler(request: Request, exc: ValueError):
+#     return JSONResponse(
+#         status_code=400,
+#         content={"message": str(exc)},
+#     )
+
+# origins = [
+#     "http://localhost",
+#     "http://localhost:3000",
+# ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -57,10 +68,10 @@ async def query(params: QueryParams):
     )
 
 
-@app.post("/llm/", response_model=str)
-async def llm(request: LLMGetRequest):
-    result = llm_get(request.model, request.messages)
-    return result
+@app.post("/llm/")
+async def llm(request: LLMChatCompletionRequest):
+    result = await llm_get(request.model, request.messages)
+    return { 'text': result }
 
 
 @app.get("/document/{doc_id}")
@@ -104,29 +115,29 @@ async def reupload_all():
 # App startup
 
 
-@app.on_event("startup")
-async def load_pinecone_index():
-    app.pinecone_index = init_pinecone_and_get_index()
+# @app.on_event("startup")
+# async def load_pinecone_index():
+#     app.pinecone_index = init_pinecone_and_get_index()
 
 
-@app.on_event("shutdown")
-async def shutdown_pinecone_index():
-    app.pinecone_index.close()
+# @app.on_event("shutdown")
+# async def shutdown_pinecone_index():
+#     app.pinecone_index.close()
 
 
-@app.on_event("startup")
-async def load_ml_models():
-    # TODO refactor to only load one model instead of the same one twice
-    app.embedding_model = load_model_hebbia()
-    app.automodel = load_automodel_hebbia()
-    app.tokenizer = load_tokenizer_hebbia()
+# # @app.on_event("startup")
+# async def load_ml_models():
+#     # TODO refactor to only load one model instead of the same one twice
+#     app.embedding_model = load_model_hebbia()
+#     app.automodel = load_automodel_hebbia()
+#     app.tokenizer = load_tokenizer_hebbia()
 
 
-@app.on_event("startup")
-async def start_mongo_client():
-    app.mongo_client, app.mongo_db = connect_to_mongo()
+# @app.on_event("startup")
+# async def start_mongo_client():
+#     app.mongo_client, app.mongo_db = connect_to_mongo()
 
 
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    app.mongo_client.close()
+# @app.on_event("shutdown")
+# async def shutdown_db_client():
+#     app.mongo_client.close()

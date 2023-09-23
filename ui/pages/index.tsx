@@ -20,17 +20,22 @@ const PromptPage: NextPage = () => {
 
   const handleNewUserPrompt = async (content: string) => {
     setWaiting(true);
-    const serverResponseMsg = await postQuery(content, axiosCatchAll);
-    console.log('Received response...', serverResponseMsg);
-    if (serverResponseMsg) {
-      setAnswers(serverResponseMsg.results);
-      const llmSummary = await sendLLMRequest({ model: 'gpt-3.5-turbo', messages: buildSummarizationPrompt(serverResponseMsg.results) })
-      console.log('Received LLM response...', llmSummary);
-      if (llmSummary) {
-        setAnswerSummary(llmSummary);
-      }
-
+    const llmSummary = await sendLLMRequest({ model: 'gpt-3.5-turbo', messages: [{role: 'system' as const, content: `What is the capital of France? Answer in 1 word.`}] })
+    console.log('Received LLM response...', llmSummary);
+    if (llmSummary) {
+      setAnswerSummary(llmSummary);
     }
+    // const serverResponseMsg = await postQuery(content, axiosCatchAll);
+    // console.log('Received response...', serverResponseMsg);
+    // if (serverResponseMsg) {
+    //   setAnswers(serverResponseMsg.results);
+    //   const llmSummary = await sendLLMRequest({ model: 'gpt-3.5-turbo', messages: buildSummarizationPrompt(serverResponseMsg.results) })
+    //   console.log('Received LLM response...', llmSummary);
+    //   if (llmSummary) {
+    //     setAnswerSummary(llmSummary);
+    //   }
+
+    // }
     setWaiting(false);
   };
 

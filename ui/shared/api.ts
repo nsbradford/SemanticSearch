@@ -2,11 +2,6 @@ import axios from "axios";
 import { QueryFullAnswer, backendRootUrl } from "../components/Utils";
 import { ChatCompletionRequestMessage } from "openai";
 
-export interface LLMGetRequest {
-  model: string;
-  messages: ChatCompletionRequestMessage[];
-}
-
 export async function postQuery(
   userinput: string,
   catchFn: (error: any) => void
@@ -16,8 +11,8 @@ export async function postQuery(
     const payload = { query: userinput };
     const url = backendRootUrl + '/query';
     console.log(`posting payload to "${url}`, payload);
-    const response = await axios.post(url, payload);
-    const data: QueryFullAnswer = response.data;
+    const response = await axios.post<QueryFullAnswer>(url, payload);
+    const data = response.data;
     console.log(`Response:`, data);
     return data;
   } catch (error) {
@@ -25,12 +20,13 @@ export async function postQuery(
   }
 }
 
+export interface LLMChatCompletionRequest {
+  model: string;
+  messages: ChatCompletionRequestMessage[];
+}
 
-export async function sendLLMRequest(data: LLMGetRequest): Promise<string> {
-  try {
-    const response = await axios.post<string>('http://localhost:8000/llm/', data);
-    return response.data;
-  } catch (error) {
-    throw new Error(`Failed to send LLM request: ${error}`);
-  }
+
+export async function sendLLMRequest(data: LLMChatCompletionRequest): Promise<string> {
+  const response = await axios.post<{text: string}>(`${backendRootUrl}/llm/`, data);
+  return response.data.text;
 }

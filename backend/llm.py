@@ -4,6 +4,7 @@ from typing import Dict, List
 
 import litellm
 from litellm import acompletion
+from backend.models import LLMChatCompletionMessage
 from backend.utils import getEnvironment
 
 # https://docs.litellm.ai/docs/observability/promptlayer_integration
@@ -16,20 +17,15 @@ litellm.headers = {
     "Helicone-Cache-Enabled": "true",
 }
 
-logger = logging.getLogger(__name__)
 
-from openai import ChatCompletion
-
-
-async def llm_get(model: str, messages: List[Dict[str, str]]) -> str:
-    logger.info(f"Calling LLM {model}")
-
+async def llm_get(model: str, messages: List[LLMChatCompletionMessage]) -> str:
+    print(f"Calling LLM {model}")
     response = await acompletion(
         model=model,
-        messages=messages,
+        messages=[m.dict() for m in messages],
         temperature=0,
         metadata={"environment": getEnvironment()},
     )
     text = response.choices[0].message.content
-    logger.info(f"LLM response: {response.choices[0].message.content}")
+    print(f"LLM response: {response.choices[0].message.content}")
     return text

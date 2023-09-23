@@ -3,15 +3,14 @@ from pydantic import BaseModel
 from typing import List
 from backend.utils import remove_duplicates, hash_sha256
 
+class LLMChatCompletionMessage(BaseModel):
+    role: str
+    content: str
 
-class Message(BaseModel):
-    key: str
-    value: str
 
-
-class LLMGetRequest(BaseModel):
+class LLMChatCompletionRequest(BaseModel):
     model: str
-    messages: List[Message]
+    messages: List[LLMChatCompletionMessage]
 
 
 class PassageEmbedding(BaseModel):

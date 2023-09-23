@@ -19,12 +19,12 @@ client = TestClient(app)
                 ],
             },
             200,
-            "Some response",
+            { "text": "Paris" },
         ),
         # Add more test cases here
     ],
 )
-def test_llm_get(payload, expected_status, expected_response):
-    response = client.post("/llm_get/", json=payload)
+def test_llm(payload, expected_status, expected_response):
+    response = client.post("/llm/", json=payload)
     assert response.status_code == expected_status
-    assert response.text == expected_response
+    assert response.json() == expected_response
