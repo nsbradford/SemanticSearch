@@ -6,9 +6,7 @@ export async function postQuery(
   userinput: string,
   catchFn: (error: any) => void
 ): Promise<QueryFullAnswer | undefined> {
-  console.log('postQuery');
-  try {
-    const payload = { query: userinput };
+    const payload = { query: userinput, sessionId: sessionId };
     const url = backendRootUrl + '/query';
     console.log(`posting payload to "${url}`, payload);
     const response = await axios.post<QueryFullAnswer>(url, payload);
@@ -23,6 +21,7 @@ export async function postQuery(
 export interface LLMChatCompletionRequest {
   model: string;
   messages: ChatCompletionRequestMessage[];
+  sessionId: string;
 }
 
 

@@ -33,8 +33,8 @@ async def query(params: QueryParams):
 
 
 @app.post("/llm/")
-async def llm(request: LLMChatCompletionRequest):
-    result = await llm_get(request.model, request.messages)
+async def llm(request: LLMChatCompletionRequest, sessionId: str):
+    result = await llm_get(request.model, request.messages, sessionId)
     return { 'text': result }
 
 
@@ -104,4 +104,3 @@ async def start_mongo_client():
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    app.mongo_client.close()
