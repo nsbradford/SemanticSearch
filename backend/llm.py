@@ -18,13 +18,14 @@ litellm.headers = {
 }
 
 
-async def llm_get(model: str, messages: List[LLMChatCompletionMessage]) -> str:
+
+async def llm_get(model: str, messages: List[LLMChatCompletionMessage], sessionId: str) -> str:
     print(f"Calling LLM {model}")
     response = await acompletion(
         model=model,
         messages=[m.dict() for m in messages],
         temperature=0,
-        metadata={"environment": getEnvironment()},
+        metadata={"environment": getEnvironment(), "sessionId": sessionId},
     )
     text = response.choices[0].message.content
     print(f"LLM response: {response.choices[0].message.content}")

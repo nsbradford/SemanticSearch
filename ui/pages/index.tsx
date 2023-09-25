@@ -17,12 +17,11 @@ const PromptPage: NextPage = () => {
   const [answerSummary, setAnswerSummary] = React.useState<string | null>(null);
 
   const handleNewUserPrompt = async (content: string) => {
-    setWaiting(true);
     const serverResponseMsg = await postQuery(content, axiosCatchAll);
     console.log('Received response...', serverResponseMsg);
     if (serverResponseMsg) {
       setAnswers(serverResponseMsg.results);
-      const llmSummary = await sendLLMRequest({ model: 'gpt-3.5-turbo', messages: buildSummarizationPrompt(content, serverResponseMsg.results) })
+      const llmSummary = await sendLLMRequest({ model: 'gpt-3.5-turbo', messages: buildSummarizationPrompt(content, serverResponseMsg.results), sessionId: sessionId })
       console.log('Received LLM response...', llmSummary);
       if (llmSummary) {
         setAnswerSummary(llmSummary);
@@ -31,7 +30,6 @@ const PromptPage: NextPage = () => {
     }
     setWaiting(false);
   };
-
   const axiosCatchAll = async (error: any) => {
     console.log('axiosCatchAll', error);
     window.alert('Internal server error :( our engineers were alerted.');
@@ -85,5 +83,3 @@ const PromptPage: NextPage = () => {
     </>
   );
 };
-
-export default PromptPage;

@@ -26,7 +26,8 @@ export interface LLMChatCompletionRequest {
 }
 
 
+
 export async function sendLLMRequest(data: LLMChatCompletionRequest): Promise<string> {
-  const response = await axios.post<{text: string}>(`${backendRootUrl}/llm/`, data);
+  const response = await axios.post<{text: string}>(`${backendRootUrl}/llm/`, { model: data.model, messages: data.messages, sessionId: data.sessionId });
   return response.data.text;
 }
