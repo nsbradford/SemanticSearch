@@ -23,6 +23,7 @@ export async function postQuery(
 export interface LLMChatCompletionRequest {
   model: string;
   messages: ChatCompletionRequestMessage[];
+  sessionId: string;
 }
 
 
