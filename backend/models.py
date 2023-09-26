@@ -8,6 +8,7 @@ class QueryParams(BaseModel):
     query: str
     top_k: int = 10
 
+
 class LLMChatCompletionMessage(BaseModel):
     role: str
     content: str
@@ -16,6 +17,7 @@ class LLMChatCompletionMessage(BaseModel):
 class LLMChatCompletionRequest(BaseModel):
     model: str
     messages: List[LLMChatCompletionMessage]
+    sessionId: str
 
 
 class PassageEmbedding(BaseModel):
