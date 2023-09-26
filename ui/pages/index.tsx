@@ -12,7 +12,7 @@ import { buildSummarizationPrompt } from '../shared/prompts';
 
 const PromptPage: NextPage = () => {
   const sessionId = getSessionId();
-  const [answers, setAnswers] = React.useState<QueryPassageAnswer[]>([]);
+  const sessionId = getSessionId();
   const [waiting, setWaiting] = React.useState(false);
   const [answerSummary, setAnswerSummary] = React.useState<string | null>(null);
 
@@ -22,7 +22,7 @@ const PromptPage: NextPage = () => {
     console.log('Received response...', serverResponseMsg);
     if (serverResponseMsg) {
       setAnswers(serverResponseMsg.results);
-      const llmSummary = await sendLLMRequest({ model: 'gpt-3.5-turbo', messages: buildSummarizationPrompt(content, serverResponseMsg.results) })
+      const llmSummary = await sendLLMRequest({ model: 'gpt-3.5-turbo', messages: buildSummarizationPrompt(content, serverResponseMsg.results), sessionId: sessionId })
       console.log('Received LLM response...', llmSummary);
       if (llmSummary) {
         setAnswerSummary(llmSummary);
@@ -85,5 +85,3 @@ const PromptPage: NextPage = () => {
     </>
   );
 };
-
-export default PromptPage;
