@@ -6,7 +6,7 @@ import { HeadDefault } from '../components/HeadDefault';
 import { InputForm } from '../components/InputForm';
 import { MessageHistory } from '../components/MessageHistory';
 import { QueryPassageAnswer, TypingIndicator } from '../components/Utils';
-import { postQuery, sendLLMRequest } from '../shared/api';
+import { postQuery, sendLLMRequest, LLMChatCompletionRequest } from '../shared/api';
 import { getSessionId } from '../shared/utils';
 import { buildSummarizationPrompt } from '../shared/prompts';
 
@@ -22,7 +22,8 @@ const PromptPage: NextPage = () => {
     console.log('Received response...', serverResponseMsg);
     if (serverResponseMsg) {
       setAnswers(serverResponseMsg.results);
-      const llmSummary = await sendLLMRequest({ model: 'gpt-3.5-turbo', messages: buildSummarizationPrompt(content, serverResponseMsg.results) })
+      const llmRequest: LLMChatCompletionRequest = { model: 'gpt-3.5-turbo', messages: buildSummarizationPrompt(content, serverResponseMsg.results), sessionId: sessionId };
+      const llmSummary = await sendLLMRequest(llmRequest);
       console.log('Received LLM response...', llmSummary);
       if (llmSummary) {
         setAnswerSummary(llmSummary);
