@@ -1,6 +1,6 @@
 # SemanticSearch
 
-Minimal RAG (Retrieval Augmented Generation) website with Pinecone, FastAPI, NextJS, MongoDB
+Minimal RAG (Retrieval Augmented Generation) website with Pinecone, FastAPI, NextJS, and MongoDB.
 
 https://github.com/nsbradford/SemanticSearch/assets/6633811/999b0a64-d48a-4a22-888f-46d730037ac2
 
