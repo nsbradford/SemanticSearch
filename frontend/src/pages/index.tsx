@@ -12,7 +12,7 @@ export default function Home() {
   }, [loading, session]);
 
   // Rest of the component
-}
+};
 ```
 
 ```typescript
