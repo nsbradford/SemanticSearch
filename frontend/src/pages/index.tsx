@@ -7,7 +7,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!loading && session) {
-      sendLLMRequest(session.id);
+      sendLLMRequest({ sessionId: session.id });
     }
   }, [loading, session]);
 
