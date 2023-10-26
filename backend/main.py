@@ -34,7 +34,7 @@ async def query(params: QueryParams):
 
 @app.post("/llm/")
 async def llm(request: LLMChatCompletionRequest):
-    result = await llm_get(request.model, request.messages)
+    result = await llm_get(request.model, request.messages, request.sessionId)
     return { 'text': result }
 
 

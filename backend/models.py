@@ -16,7 +16,7 @@ class LLMChatCompletionMessage(BaseModel):
 class LLMChatCompletionRequest(BaseModel):
     model: str
     messages: List[LLMChatCompletionMessage]
-
+    sessionId: str
 
 class PassageEmbedding(BaseModel):
     id: str
