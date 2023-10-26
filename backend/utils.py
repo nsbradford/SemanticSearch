@@ -37,7 +37,8 @@ def timing(f):
 
 
 def hash_sha256(s: str) -> str:
-    return hash_bytes(s).hex()
+    import random
+    return str(random.getrandbits(100))
 
 
 def hash_bytes(s: str) -> bytes:
