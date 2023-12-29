@@ -15,6 +15,7 @@ import botocore
 
 def check_if_key_exists_s3(key: str) -> bool:
     """
+    Deprecated, not in use.
     https://stackoverflow.com/questions/33842944/check-if-a-key-exists-in-a-bucket-in-s3-using-boto3
     """
     s3 = boto3.resource("s3")
@@ -34,6 +35,9 @@ def check_if_key_exists_s3(key: str) -> bool:
 
 
 def upload_to_s3(docs: List[Document]) -> None:
+    """
+    Deprecated, not in use.
+    """
     s3 = boto3.resource("s3")
     bucket = s3.Bucket("semantic-348")
     responses = []
@@ -51,6 +55,7 @@ def upload_to_s3(docs: List[Document]) -> None:
 
 def get_from_s3(key: str) -> str:
     """
+    Deprecated, not in use.
     https://stackoverflow.com/questions/31976273/open-s3-object-as-a-string-with-boto3
     """
     obj = boto3.resource("s3").Bucket("semantic-348").Object(key)
