@@ -18,7 +18,7 @@ from backend.models import (
     QueryPassageAnswer,
 )
 
-# from s3_utils import upload_to_s3
+# from s3 import upload_to_s3
 from collections import defaultdict
 
 
